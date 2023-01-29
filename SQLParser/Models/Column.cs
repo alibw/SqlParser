@@ -1,6 +1,6 @@
 ﻿namespace SQLParser;
 
-public class ParsedProperty
+public class Column
 {
     public string Name { get; set; }
     public string Value { get; set; }

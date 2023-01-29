@@ -1,10 +1,10 @@
 ﻿namespace SQLParser;
 
-public class ParsedModel
+public class Table
 {
     public string DbName { get; set; }
     
     public string TableName { get; set; }
 
-    public List<ParsedProperty> Properties { get; set; }
+    public List<Column> Properties { get; set; }
 }

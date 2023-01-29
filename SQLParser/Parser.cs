@@ -31,15 +31,15 @@ public static class Parser
         return result;
     }
 
-    private static List<ParsedProperty> GetProperties(List<string> input)
+    private static List<Column> GetProperties(List<string> input)
     {
         string joinedInput = String.Join(" ", input);
-        List<ParsedProperty> result = new List<ParsedProperty>();
+        List<Column> result = new List<Column>();
 
         foreach (var line in joinedInput.Split(','))
         {
             var lineTokens = Split(line);
-            var parsedProperty = new ParsedProperty();
+            var parsedProperty = new Column();
             parsedProperty.Name = lineTokens[0];
             parsedProperty.Type = lineTokens[1];
             if (lineTokens[2].ToCharArray().First() == '(' && lineTokens[2].ToCharArray().Last() == ')')
@@ -60,14 +60,14 @@ public static class Parser
         return result;
     }
 
-    public static ParsedModel Parse(string input)
+    public static Table Parse(string input)
     {
         var splitted = Split(input);
-        var model = new ParsedModel();
+        var model = new Table();
         int propertiesStart = 0;
         int propertiesEnd = 0;
 
-        var properties = new List<ParsedProperty>();
+        var properties = new List<Column>();
         for (int i = 0; i < splitted.Count; i++)
         {
             if (splitted[i] == "USE")
