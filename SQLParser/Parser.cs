@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace SQLParser;
 
@@ -31,68 +32,74 @@ public static class Parser
         return result;
     }
 
-    private static List<Column> GetProperties(List<string> input)
-    {
-        string joinedInput = String.Join(" ", input);
-        List<Column> result = new List<Column>();
-
-        foreach (var line in joinedInput.Split(','))
-        {
-            var lineTokens = Split(line);
-            var parsedProperty = new Column();
-            parsedProperty.Name = lineTokens[0];
-            parsedProperty.Type = lineTokens[1];
-            if (lineTokens[2].ToCharArray().First() == '(' && lineTokens[2].ToCharArray().Last() == ')')
-            {
-                parsedProperty.MaxLength = lineTokens[2].Replace('(', ' ').Replace(')', ' ');
-            }
-
-            if (lineTokens[3] == "NOT" && lineTokens[4] == "NULL")
-            {
-                parsedProperty.Nullable = false;
-            }
-            else
-            {
-                parsedProperty.Nullable = true;
-            }
-        }
-
-        return result;
-    }
-
     public static Table Parse(string input)
     {
         var splitted = Split(input);
         var model = new Table();
-        int propertiesStart = 0;
-        int propertiesEnd = 0;
+        List<Column> columns = new List<Column>();
+        var column = new Column();
+        bool columnTokens = false;
 
         var properties = new List<Column>();
         for (int i = 0; i < splitted.Count; i++)
         {
-            if (splitted[i] == "USE")
+
+            if (splitted[i - 1] == "dbo")
             {
-                model.DbName = splitted[i + 1];
+                model.TableName = splitted[i];
             }
 
-            if (splitted[i] == "dbo")
+            if (splitted[i] == "(")
             {
-                model.TableName = splitted[i + 1];
+                columnTokens = true;
             }
 
-            if (splitted[i].ToCharArray().Last() == '(')
+            if (columnTokens)
             {
-                propertiesStart = splitted.IndexOf(splitted[i]);
-            }
+                if (!splitted[i].Contains("IDENTITY"))
+                {
+                    if (!splitted[i].Contains("NOT"))
+                    {
+                        if (!splitted[i].Contains("NULL") || !splitted[i].Contains("NULL,"))
+                        {
+                            if (splitted[i].All(Char.IsLetter))
+                            {
+                                if (column.Name != null)
+                                {
+                                    column.Type = splitted[i];
+                                }
+                                else
+                                {
+                                    column.Name = splitted[i];
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (splitted[i].ToCharArray().Last() == ',')
+                                column = new Column();
+                            column.Nullable = false;
+                        }
+                    }
+                    else
+                    {
+                        column.Nullable = true;
+                    }
+                    if (splitted[i].ToCharArray().Last() == ')' && !splitted[i].Any(Char.IsDigit) && splitted[i] != "(max)")
+                    {
+                        columnTokens = false;
+                    }
+                }
 
-            if (splitted[i].ToCharArray().Last() == ')' && !splitted[i - 1].Any(Char.IsDigit))
-            {
-                propertiesEnd = splitted.IndexOf(splitted[i]);
-                GetProperties(splitted.GetRange(propertiesStart, propertiesEnd));
+                if (column.Name != null && column.Type != null)
+                {
+                    columns.Add(column);
+                    column = new Column();
+                }
             }
-
-           
         }
+
+        model.Properties = columns;
 
         return model;
     }
