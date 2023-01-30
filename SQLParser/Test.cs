@@ -15,7 +15,7 @@ public class Test
     [Test]
     public void SplitTest()
     {
-        List<string> tokens = new List<string>
+        List<string> tokens = new()
         {
             "USE","College","CREATE","TABLE","dbo","Lesson","(","Id","bigint",
             "IDENTITY(1,1)","NOT","NULL,","Title","nvarchar","(max)","NOT","NULL,","UnitNum","bigint","NOT","NULL)"
@@ -38,11 +38,29 @@ public class Test
     [Test]
     public void GetPropertiesNamesTest()
     {
-        var parsed = Parser.Parse(script);
-        StringBuilder sb = new StringBuilder();
-        foreach (var item in parsed.Properties)
+        List<Column> columns = new()
         {
-            sb.Append("|" + item.Name);
-        }
+            new()
+            {
+                Name = "Id",
+                Type = "bigint",
+                Nullable = false
+            },
+            new()
+            {
+                Name = "Title",
+                Type = "nvarchar",
+                Nullable = false
+            },
+            new()
+            {
+                Name = "UnitNum",
+                Type = "bigint",
+                Nullable = false
+            }
+
+        };
+        var parsed = Parser.Parse(script);
+        Assert.AreEqual(columns,parsed.Properties);
     }
 }
