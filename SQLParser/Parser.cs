@@ -43,8 +43,8 @@ public static class Parser
         var properties = new List<Column>();
         for (int i = 0; i < splitted.Count; i++)
         {
-
-            if (splitted[i - 1] == "dbo")
+            
+            if ( i > 0 && splitted[i-1] == "dbo")
             {
                 model.TableName = splitted[i];
             }
