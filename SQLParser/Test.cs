@@ -15,13 +15,12 @@ public class Test
     [Test]
     public void SplitTest()
     {
-        StringBuilder sb = new StringBuilder();
-        foreach (var item in Parser.Split(script))
+        List<string> tokens = new List<string>
         {
-            sb.Append("|" + item);
-        }
-
-        Console.WriteLine(sb.ToString());
+            "USE","College","CREATE","TABLE","dbo","Lesson","(","Id","bigint",
+            "IDENTITY(1,1)","NOT","NULL,","Title","nvarchar","(max)","NOT","NULL,","UnitNum","bigint","NOT","NULL)"
+        };
+        Assert.AreEqual(tokens,Parser.Split(script));
     }
 
     [Test]
