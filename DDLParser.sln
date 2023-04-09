@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLParser", "SQLParser\SQLParser.csproj", "{87288F44-74F9-48CE-A1B5-F48A4BDC4BE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDLParser", "DDLParser\DDLParser.csproj", "{87288F44-74F9-48CE-A1B5-F48A4BDC4BE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

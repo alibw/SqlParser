@@ -6,21 +6,23 @@ namespace SQLParser;
 [TestFixture]
 public class Test
 {
-    public static string script = @"USE [College]
-    CREATE TABLE [dbo].[Lesson](
-    [Id] [bigint] IDENTITY(1,1) NOT NULL,
-    [Title] [nvarchar](max) NOT NULL,
-    [UnitNum] [bigint] NOT NULL)";
+    public static string script = @"
+    CREATE TABLE [dbo].[Lesson]
+    (
+    [Id] [bigint] NOT NULL IDENTITY(1,1),
+    [Title] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+    [UnitNum] [bigint] NOT NULL
+    )";
 
     [Test]
     public void SplitTest()
     {
         List<string> tokens = new()
         {
-            "USE","College","CREATE","TABLE","dbo","Lesson","(","Id","bigint",
-            "IDENTITY(1,1)","NOT","NULL,","Title","nvarchar","(max)","NOT","NULL,","UnitNum","bigint","NOT","NULL)"
+            "CREATE","TABLE","dbo","Lesson","(","Id","bigint",
+            "NOT","NULL,","IDENTITY(1,1)","Title","nvarchar","(max)","COLLATE","SQL_Latin1_General_CP1_CI_AS","NOT","NULL,","UnitNum","bigint","NOT","NULL",")"
         };
-        Assert.AreEqual(tokens,Parser.Split(script));
+        Assert.AreEqual(tokens, Parser.Split(script));
     }
 
     [Test]

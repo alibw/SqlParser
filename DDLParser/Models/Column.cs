@@ -6,6 +6,14 @@ public class Column :IEquatable<Column>
     public string Type { get; set; }
     public bool Nullable { get; set; }
 
+    public bool IsIdentity { get; set; }
+
+    public bool IsPrimaryKey { get; set; }
+
+    public bool IsForeignKey { get; set; }
+
+    public Table? ForeignKeyTable { get; set; }
+
     public bool Equals(Column? other)
     {
         if (ReferenceEquals(null, other)) return false;
