@@ -43,6 +43,9 @@ public static class Parser
         bool notNullable = false;
         bool nameFilled = false;
         bool typeFilled = false;
+        bool isForeignKey = false;
+        bool isPrimaryKey = false;
+        Column? foreignKeyColumn = new Column();
 
         var properties = new List<Column>();
         for (int i = 0; i < splitted.Count; i++)
@@ -75,7 +78,7 @@ public static class Parser
                     column.Nullable = true;
                 }
 
-                if (splitted[i-1].ToCharArray().Last() == ',' || splitted[i-1] == "(")
+                if ((splitted[i-1].ToCharArray().Last() == ',' || splitted[i-1] == "(") && !splitted[i].Contains(')'))
                 {
                     column.Name = nameFilled ? column.Name : splitted[i];
                     nameFilled = true;
@@ -100,11 +103,34 @@ public static class Parser
 
             if (splitted[i] == "FOREIGN")
             {
-                var foreignKey = new Column()
+                isForeignKey = true;
+            }
+            
+            if (splitted[i] == "PRIMARY")
+            {
+                isPrimaryKey = true;
+            }
+            if (isForeignKey)
+            {
+                if (splitted[i - 1] == "(")
                 {
-                    
+                    foreignKeyColumn = columns.FirstOrDefault(x => x.Name == splitted[i]);
+                    foreignKeyColumn!.IsForeignKey = true;
+                }
 
-                };
+                if ((splitted[i - 1] == "dbo"))
+                {
+                    foreignKeyColumn!.ForeignKeyTableName = splitted[i];
+                    isForeignKey = false;
+                }
+            }
+            if (isPrimaryKey)
+            {
+                if (splitted[i - 1] == "(")
+                {
+                    columns.FirstOrDefault(x => x.Name == splitted[i])!.IsPrimaryKey = true;
+                    isPrimaryKey = false;
+                }
             }
         }
 
