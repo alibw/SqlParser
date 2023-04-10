@@ -78,7 +78,7 @@ public static class Parser
                     column.Nullable = true;
                 }
 
-                if ((splitted[i-1].ToCharArray().Last() == ',' || splitted[i-1] == "(") && !splitted[i].Contains(')'))
+                if (((splitted[i-1].ToCharArray().Last() == ',' || splitted[i-1] == "(")) && !splitted[i].Contains(')'))
                 {
                     column.Name = nameFilled ? column.Name : splitted[i];
                     nameFilled = true;
@@ -98,6 +98,8 @@ public static class Parser
                     nameFilled = false;
                     typeFilled = false;
                     column = new Column();
+                    if (splitted[i] == ")")
+                        columnTokens = false;
                 }
             }
 
