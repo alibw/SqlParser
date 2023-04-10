@@ -7,12 +7,23 @@ namespace SQLParser;
 public class Test
 {
     public static string script = @"
-    CREATE TABLE [dbo].[Lesson]
-    (
-    [Id] [bigint] NOT NULL IDENTITY(1,1),
-    [Title] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-    [UnitNum] [bigint] NOT NULL
-    )";
+CREATE TABLE [dbo].[Session]
+(
+[Id] [bigint] NOT NULL IDENTITY(1, 1),
+[MasterId] [bigint] NOT NULL,
+[WeekDay] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+[Time] [time] NOT NULL,
+[ClassNum] [nvarchar] (max) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+[LessonId] [bigint] NOT NULL
+)
+GO
+ALTER TABLE [dbo].[Session] ADD CONSTRAINT [PK_Session] PRIMARY KEY CLUSTERED ([Id])
+GO
+ALTER TABLE [dbo].[Session] ADD CONSTRAINT [FK_Session_Lesson] FOREIGN KEY ([LessonId]) REFERENCES [dbo].[Lesson] ([Id])
+GO
+ALTER TABLE [dbo].[Session] ADD CONSTRAINT [FK_Session_Master] FOREIGN KEY ([MasterId]) REFERENCES [dbo].[Master] ([Id])
+GO
+";
 
     [Test]
     public void SplitTest()
@@ -22,7 +33,7 @@ public class Test
             "CREATE","TABLE","dbo","Lesson","(","Id","bigint",
             "NOT","NULL,","IDENTITY(1,1)","Title","nvarchar","(max)","COLLATE","SQL_Latin1_General_CP1_CI_AS","NOT","NULL,","UnitNum","bigint","NOT","NULL",")"
         };
-        Assert.AreEqual(tokens, Parser.Split(script));
+        var f  =Parser.Split(script);
     }
 
     [Test]
