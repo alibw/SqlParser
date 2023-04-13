@@ -45,6 +45,7 @@ public static class Parser
         bool typeFilled = false;
         bool isForeignKey = false;
         bool isPrimaryKey = false;
+        bool endOfColumns = false;
         Column? foreignKeyColumn = new Column();
 
         var properties = new List<Column>();
@@ -55,7 +56,7 @@ public static class Parser
                 model.TableName = splitted[i];
             }
 
-            if (splitted[i] == "(" || splitted[i].ToCharArray().Last() == '(') 
+            if ((splitted[i] == "(" || splitted[i].ToCharArray().Last() == '(') && !endOfColumns) 
             {
                 columnTokens = true;
             }
@@ -99,7 +100,10 @@ public static class Parser
                     typeFilled = false;
                     column = new Column();
                     if (splitted[i] == ")")
+                    {
                         columnTokens = false;
+                        endOfColumns = true;
+                    }
                 }
             }
 
